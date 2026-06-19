@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rinaldo Pereira | SAP ABAP Júnior</title>
+<style>
+  :root{
+    --sap-blue-dark:#11365e;
+    --sap-blue:#0a6ed1;
+    --sap-blue-deep:#0854a0;
+    --sap-blue-bright:#1b90ff;
+    --sap-grey-bg:#eef1f4;
+    --sap-grey-panel:#f7f8fa;
+    --sap-grey-line:#cdd5dc;
+    --sap-text:#1d2d3e;
+    --sap-text-soft:#5b6b79;
+    --sap-orange:#e9730c;
+    --sap-green:#107e3e;
+    --sap-red:#bb0000;
+    --sap-yellow:#e9730c;
+    --mono:'Consolas','Lucida Console',monospace;
+    --sans:'Segoe UI','Arial',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    background:var(--sap-grey-bg);
+    color:var(--sap-text);
+    font-size:15px;
+    line-height:1.5;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ===== SAP GUI Title Bar ===== */
+  .gui-titlebar{
+    background:linear-gradient(180deg,var(--sap-blue-dark) 0%, #0c2c4d 100%);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 14px;
+    font-size:12.5px;
+    letter-spacing:.3px;
+  }
+  .gui-titlebar .lights{display:flex;gap:6px;}
+  .gui-titlebar .lights span{
+    width:11px;height:11px;border-radius:2px;display:inline-block;
+  }
+  .l-red{background:#d83b3b;}
+  .l-yellow{background:#e9b400;}
+  .l-green{background:#3fb950;}
+  .gui-titlebar .tcode{font-family:var(--mono);opacity:.85;}
+
+  /* ===== Menu / Toolbar ===== */
+  .gui-menubar{
+    background:var(--sap-blue);
+    color:#fff;
+    display:flex;
+    gap:0;
+    font-size:13px;
+    overflow-x:auto;
+    border-bottom:2px solid var(--sap-blue-deep);
+  }
+  .gui-menubar a{
+    padding:10px 16px;
+    white-space:nowrap;
+    border-right:1px solid rgba(255,255,255,.12);
+    transition:background .15s;
+  }
+  .gui-menubar a:hover{background:var(--sap-blue-bright);}
+  .gui-menubar a.active{background:var(--sap-blue-deep);font-weight:600;}
+
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px;}
+
+  /* ===== Hero ===== */
+  .hero{
+    background:
+      linear-gradient(135deg, var(--sap-blue-dark) 0%, var(--sap-blue-deep) 55%, var(--sap-blue) 100%);
+    color:#fff;
+    padding:54px 0 64px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 28px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 28px);
+    pointer-events:none;
+  }
+  .hero-inner{position:relative;z-index:1;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:#bcdcff;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.25);
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:2px;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:42px;
+    margin:0 0 6px;
+    font-weight:700;
+    letter-spacing:.3px;
+  }
+  .hero h2{
+    font-size:18px;
+    font-weight:400;
+    margin:0 0 22px;
+    color:#d7e9ff;
+  }
+  .hero p.lead{
+    max-width:560px;
+    color:#dce9f7;
+    margin:0 0 28px;
+  }
+  .hero-links{display:flex;gap:12px;flex-wrap:wrap;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;
+    border-radius:3px;
+    font-size:13.5px;
+    font-weight:600;
+    border:1px solid transparent;
+    cursor:pointer;
+  }
+  .btn-primary{background:var(--sap-orange);color:#fff;}
+  .btn-primary:hover{background:#cf6109;}
+  .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.5);}
+  .btn-ghost:hover{background:rgba(255,255,255,.12);}
+
+  /* status chip */
+  .status-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--mono);font-size:12px;
+    background:rgba(0,0,0,.18);
+    padding:5px 10px;border-radius:2px;
+    margin-top:26px;color:#bfe3c8;
+  }
+  .status-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--sap-green);box-shadow:0 0 0 0 rgba(63,185,80,.6);animation:pulse 2s infinite;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(63,185,80,.55);}
+    70%{box-shadow:0 0 0 7px rgba(63,185,80,0);}
+    100%{box-shadow:0 0 0 0 rgba(63,185,80,0);}
+  }
+
+  /* ===== Section generic ===== */
+  section{padding:54px 0;}
+  .section-head{
+    display:flex;align-items:baseline;gap:10px;
+    margin-bottom:28px;
+    border-bottom:2px solid var(--sap-blue);
+    padding-bottom:10px;
+  }
+  .section-head .tag{
+    font-family:var(--mono);
+    font-size:12px;color:#fff;background:var(--sap-blue);
+    padding:2px 8px;border-radius:2px;letter-spacing:.5px;
+  }
+  .section-head h3{
+    margin:0;font-size:22px;font-weight:700;color:var(--sap-blue-dark);
+  }
+  .panel{
+    background:var(--sap-grey-panel);
+    border:1px solid var(--sap-grey-line);
+    border-radius:4px;
+    box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+
+  /* ===== Sobre ===== */
+  #sobre{background:#fff;}
+  .sobre-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  @media(max-width:760px){.sobre-grid{grid-template-columns:1fr;}}
+  .sobre-grid p{margin:0 0 14px;color:var(--sap-text-soft);}
+  .field-card{
+    background:var(--sap-grey-panel);
+    border:1px solid var(--sap-grey-line);
+    border-left:4px solid var(--sap-blue);
+    padding:16px 18px;
+    border-radius:3px;
+    font-size:13.5px;
+  }
+  .field-card .k{font-family:var(--mono);color:var(--sap-blue-deep);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;}
+  .field-card .v{font-weight:600;margin-top:3px;}
+
+  /* ===== Habilidades / code block ===== */
+  #habilidades{background:var(--sap-grey-bg);}
+  .code-block{
+    background:#1d2d3e;
+    color:#d6e4f0;
+    border-radius:4px;
+    padding:20px 22px;
+    font-family:var(--mono);
+    font-size:13.5px;
+    line-height:1.7;
+    overflow-x:auto;
+    box-shadow:0 4px 14px rgba(0,0,0,.18);
+  }
+  .code-block .ln{color:#5b738c;margin-right:14px;user-select:none;}
+  .code-block .kw{color:#7fb8ff;}
+  .code-block .str{color:#9fdf8f;}
+  .code-block .cm{color:#6f8aa3;font-style:italic;}
+
+  /* ===== Ferramentas / chips ===== */
+  .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+  .chip{
+    background:#fff;
+    border:1px solid var(--sap-grey-line);
+    border-radius:20px;
+    padding:8px 16px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--sap-blue-deep);
+    display:flex;align-items:center;gap:8px;
+  }
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sap-orange);}
+
+  /* ===== Projetos (transações) ===== */
+  #projetos{background:#fff;}
+  .tx-list{display:flex;flex-direction:column;gap:14px;}
+  .tx-card{
+    display:grid;
+    grid-template-columns:90px 1fr;
+    border:1px solid var(--sap-grey-line);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .tx-code{
+    background:var(--sap-blue-dark);
+    color:#9fd0ff;
+    font-family:var(--mono);
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:10px 6px;
+    font-weight:700;
+  }
+  .tx-body{padding:16px 20px;background:var(--sap-grey-panel);}
+  .tx-body h4{margin:0 0 8px;font-size:16px;color:var(--sap-text);}
+  .tx-body ul{margin:0;padding-left:18px;color:var(--sap-text-soft);font-size:13.5px;}
+  .tx-body li{margin-bottom:3px;}
+
+  /* ===== Tabela / conhecimentos ===== */
+  #conhecimentos{background:var(--sap-grey-bg);}
+  table.sap-table{
+    width:100%;border-collapse:collapse;background:#fff;
+    border:1px solid var(--sap-grey-line);border-radius:4px;overflow:hidden;
+  }
+  table.sap-table th{
+    background:var(--sap-blue);color:#fff;text-align:left;
+    font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;
+    padding:10px 16px;
+  }
+  table.sap-table td{
+    padding:10px 16px;font-size:13.5px;border-top:1px solid var(--sap-grey-line);color:var(--sap-text-soft);
+  }
+  table.sap-table tr:nth-child(even) td{background:#f4f7fa;}
+
+  /* ===== Formação / cursos timeline ===== */
+  #formacao{background:#fff;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:30px;}
+  @media(max-width:760px){.two-col{grid-template-columns:1fr;}}
+  .formacao-card{
+    border:1px solid var(--sap-grey-line);border-left:4px solid var(--sap-green);
+    background:var(--sap-grey-panel);padding:18px 20px;border-radius:3px;
+  }
+  .formacao-card .ph{font-family:var(--mono);font-size:11.5px;color:var(--sap-green);text-transform:uppercase;}
+  .course-list{list-style:none;margin:0;padding:0;}
+  .course-list li{
+    display:flex;gap:10px;align-items:flex-start;
+    padding:9px 0;border-bottom:1px dashed var(--sap-grey-line);font-size:13.5px;color:var(--sap-text);
+  }
+  .course-list li:last-child{border-bottom:none;}
+  .course-list li::before{content:"✓";color:var(--sap-green);font-weight:700;}
+
+  /* ===== Idiomas / Diferenciais ===== */
+  #idiomas-diferenciais{background:var(--sap-grey-bg);}
+  .bar-wrap{margin-bottom:8px;}
+  .bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;color:var(--sap-text-soft);}
+  .bar-track{height:10px;background:#dde4ea;border-radius:5px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--sap-blue),var(--sap-blue-bright));border-radius:5px;}
+  .dif-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+  @media(max-width:600px){.dif-grid{grid-template-columns:1fr;}}
+  .dif-item{
+    background:#fff;border:1px solid var(--sap-grey-line);border-radius:3px;
+    padding:14px 16px;font-size:13.5px;display:flex;gap:10px;align-items:flex-start;
+  }
+  .dif-item .num{font-family:var(--mono);color:var(--sap-orange);font-weight:700;}
+
+  /* ===== Contato ===== */
+  #contato{
+    background:linear-gradient(135deg,var(--sap-blue-dark),var(--sap-blue-deep));
+    color:#fff;
+  }
+  #contato .section-head{border-bottom-color:rgba(255,255,255,.4);}
+  #contato .section-head h3{color:#fff;}
+  .contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  @media(max-width:600px){.contact-grid{grid-template-columns:1fr;}}
+  .contact-item{
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:4px;
+    padding:16px 18px;
+    font-size:13.5px;
+  }
+  .contact-item .k{font-family:var(--mono);font-size:11px;color:#9fd0ff;text-transform:uppercase;letter-spacing:.5px;}
+  .contact-item .v{font-weight:600;margin-top:4px;word-break:break-word;}
+  .contact-item a{color:#fff;border-bottom:1px solid rgba(255,255,255,.4);}
+
+  /* ===== Status bar footer ===== */
+  .gui-statusbar{
+    background:var(--sap-blue-dark);
+    color:#9fb8cf;
+    font-family:var(--mono);
+    font-size:11.5px;
+    display:flex;
+    justify-content:space-between;
+    padding:8px 16px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .gui-statusbar span{display:flex;align-items:center;gap:6px;}
+  .gui-statusbar .dot{width:7px;height:7px;border-radius:50%;background:var(--sap-green);}
+
+  ::selection{background:var(--sap-blue);color:#fff;}
+
+  @media (prefers-reduced-motion: reduce){
+    .status-chip .dot{animation:none;}
+  }
+
+  @media(max-width:600px){
+    .hero h1{font-size:30px;}
+    .tx-card{grid-template-columns:64px 1fr;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- SAP GUI title bar -->
+  <div class="gui-titlebar">
+    <div class="lights">
+      <span class="l-red"></span><span class="l-yellow"></span><span class="l-green"></span>
+    </div>
+    <div class="tcode">SE38 — Rinaldo_Pereira — ABAP Editor — Sistema: DEV</div>
+  </div>
+
+  <!-- Menu / navegação -->
+  <nav class="gui-menubar">
+    <a href="#topo" class="active">Início</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#habilidades">Habilidades</a>
+    <a href="#ferramentas">Ferramentas</a>
+    <a href="#projetos">Projetos</a>
+    <a href="#conhecimentos">Conhecimentos</a>
+    <a href="#formacao">Formação &amp; Cursos</a>
+    <a href="#idiomas-diferenciais">Perfil</a>
+    <a href="#contato">Contato</a>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="topo">
+    <div class="wrap hero-inner">
+      <span class="eyebrow">Z_DEVELOPER_PROFILE · Transação Pessoal</span>
+      <h1>Rinaldo Pereira de Andrade Júnior</h1>
+      <h2>Desenvolvedor SAP ABAP Júnior · Recife / Jaboatão dos Guararapes — PE</h2>
+      <p class="lead">
+        Atuo na programação ABAP, criação de relatórios ALV e modularização de soluções
+        dentro do ambiente SAP, conectando lógica de negócio a código limpo e documentado.
+      </p>
+      <div class="hero-links">
+        <a class="btn btn-primary" href="#contato">Falar comigo</a>
+        <a class="btn btn-ghost" href="https://github.com/RinaldoFull" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/rinaldo-pereira-l-developer-2aa407287" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="status-chip"><span class="dot"></span> SESSÃO ATIVA · Disponível para oportunidades Júnior</div>
+    </div>
+  </header>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div class="wrap">
+      <div class="section-head"><span class="tag">01</span><h3>Sobre mim</h3></div>
+      <div class="sobre-grid">
+        <div>
+          <p>
+            Estou em formação em Análise e Desenvolvimento de Sistemas e venho construindo,
+            de forma prática e dedicada, uma base sólida em ABAP — da lógica de programação
+            à criação de relatórios e à modularização de código com FORM e FUNCTION.
+          </p>
+          <p>
+            Gosto de transformar requisitos de negócio em soluções organizadas: levanto o
+            requisito, desenho o fluxo lógico e implemento no editor, sempre documentando
+            cada etapa para facilitar manutenção futura.
+          </p>
+          <p>
+            Busco minha primeira oportunidade como Desenvolvedor ABAP Júnior para aplicar
+            esse conhecimento em projetos reais e continuar evoluindo dentro do ecossistema SAP.
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="field-card">
+            <div class="k">Objetivo</div>
+            <div class="v">Desenvolvedor SAP ABAP Júnior</div>
+          </div>
+          <div class="field-card">
+            <div class="k">Localização</div>
+            <div class="v">Jaboatão dos Guararapes — PE, Recife</div>
+          </div>
+          <div class="field-card">
+            <div class="k">Formação</div>
+            <div class="v">ADS — Faculdade Nova Roma (4º período)</div>
+          </div>
+          <div class="field-card">
+            <div class="k">Status</div>
+            <div class="v">Aprendizado contínuo · Projetos práticos simulados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HABILIDADES -->
+  <section id="habilidades">
+    <div class="wrap">
+      <div class="section-head"><span class="tag">02</span><h3>Habilidades Técnicas</h3></div>
+      <div class="code-block">
+        <div><span class="ln">01</span><span class="cm">" Competências em ABAP</span></div>
+        <div><span class="ln">02</span><span class="kw">REPORT</span> z_skills_rinaldo.</div>
+        <div><span class="ln">03</span></div>
+        <div><span class="ln">04</span><span class="kw">DATA</span>: skill_01 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'Programação em ABAP'</span>,</div>
+        <div><span class="ln">05</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skill_02 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'Relatórios ALV'</span>,</div>
+        <div><span class="ln">06</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skill_03 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'SELECT, JOIN e filtros (WHERE)'</span>,</div>
+        <div><span class="ln">07</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skill_04 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'Internal Tables'</span>,</div>
+        <div><span class="ln">08</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skill_05 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'Debugging de programas ABAP'</span>,</div>
+        <div><span class="ln">09</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skill_06 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'Modularização (FORM / FUNCTION)'</span>,</div>
+        <div><span class="ln">10</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skill_07 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'Lógica de programação'</span>,</div>
+        <div><span class="ln">11</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skill_08 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'Análise de requisitos'</span>,</div>
+        <div><span class="ln">12</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skill_09 <span class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'Fluxogramas e documentação técnica'</span>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FERRAMENTAS -->
+  <section id="ferramentas">
+    <div class="wrap">
+      <div class="section-head"><span class="tag">03</span><h3>Ferramentas</h3></div>
+      <div class="chip-row">
+        <div class="chip">SAP GUI</div>
+        <div class="chip">SE38 / ABAP Editor</div>
+        <div class="chip">Debugger SAP</div>
+        <div class="chip">Excel</div>
+        <div class="chip">Draw.io / Lucidchart</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJETOS -->
+  <section id="projetos">
+    <div class="wrap">
+      <div class="section-head"><span class="tag">04</span><h3>Projetos Práticos</h3></div>
+      <div class="tx-list">
+        <div class="tx-card">
+          <div class="tx-code">ZR01</div>
+          <div class="tx-body">
+            <h4>Relatório de Clientes com Filtro</h4>
+            <ul>
+              <li>Desenvolvimento de relatório em ABAP com busca por dados filtrados</li>
+              <li>Implementação de SELECT com condições (WHERE)</li>
+              <li>Exibição em ALV com ordenação</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tx-card">
+          <div class="tx-code">ZR02</div>
+          <div class="tx-body">
+            <h4>Sistema de Consulta de Dados</h4>
+            <ul>
+              <li>Criação de programa para leitura de tabelas SAP</li>
+              <li>Uso de JOIN para combinação de dados</li>
+              <li>Estruturação com modularização (FORM)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tx-card">
+          <div class="tx-code">ZR03</div>
+          <div class="tx-body">
+            <h4>Simulação de Requisito de Negócio</h4>
+            <ul>
+              <li>Levantamento de requisito fictício</li>
+              <li>Criação de fluxo lógico (fluxograma)</li>
+              <li>Implementação completa em ABAP</li>
+              <li>Documentação técnica do projeto</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONHECIMENTOS -->
+  <section id="conhecimentos">
+    <div class="wrap">
+      <div class="section-head"><span class="tag">05</span><h3>Conhecimentos Complementares</h3></div>
+      <table class="sap-table">
+        <thead>
+          <tr><th>Área</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ERP / SAP</td><td>Noções de ERP e funcionamento do SAP</td></tr>
+          <tr><td>Módulos</td><td>Conceitos básicos de FI, MM e SD</td></tr>
+          <tr><td>Qualidade</td><td>Testes de sistema e validação de dados</td></tr>
+          <tr><td>Documentação</td><td>Documentação técnica e funcional</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FORMAÇÃO & CURSOS -->
+  <section id="formacao">
+    <div class="wrap">
+      <div class="section-head"><span class="tag">06</span><h3>Formação &amp; Cursos</h3></div>
+      <div class="two-col">
+        <div>
+          <div class="formacao-card">
+            <div class="ph">Formação Acadêmica</div>
+            <h4 style="margin:8px 0 4px;">ADS — Análise e Desenvolvimento de Sistemas</h4>
+            <p style="margin:0;color:var(--sap-text-soft);font-size:13.5px;">Faculdade Nova Roma · 3º Período em andamento</p>
+          </div>
+        </div>
+        <div>
+          <ul class="course-list">
+            <li>Formação ABAP Jr. — Udemy</li>
+            <li>ABAP Para Iniciantes — Udemy</li>
+            <li>Treinamento SAP/ABAP — Udemy</li>
+            <li>ABAP Orientado a Objetos — Udemy</li>
+            <li>SAP ABAP na Prática — Aprenda com Exercícios — Udemy</li>
+            <li>SAP/ABAP — ALV (ABAP List View) OO — Descomplicando o uso — Udemy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IDIOMAS & DIFERENCIAIS -->
+  <section id="idiomas-diferenciais">
+    <div class="wrap">
+      <div class="section-head"><span class="tag">07</span><h3>Idiomas &amp; Diferenciais</h3></div>
+      <div class="two-col">
+        <div>
+          <h4 style="margin:0 0 14px;color:var(--sap-blue-dark);font-size:15px;">Idiomas</h4>
+          <div class="bar-wrap">
+            <div class="bar-label"><span>Inglês</span><span>Básico / Intermediário</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%;"></div></div>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin:0 0 14px;color:var(--sap-blue-dark);font-size:15px;">Diferenciais</h4>
+          <div class="dif-grid">
+            <div class="dif-item"><span class="num">+</span> Foco em aprendizado contínuo</div>
+            <div class="dif-item"><span class="num">+</span> Experiência prática com projetos simulados</div>
+            <div class="dif-item"><span class="num">+</span> Facilidade em resolver problemas</div>
+            <div class="dif-item"><span class="num">+</span> Organização e documentação de código</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato">
+    <div class="wrap">
+      <div class="section-head"><span class="tag">08</span><h3>Contato</h3></div>
+      <div class="contact-grid">
+        <div class="contact-item">
+          <div class="k">Celular</div>
+          <div class="v">81 9 9755-0512</div>
+        </div>
+        <div class="contact-item">
+          <div class="k">Email</div>
+          <div class="v"><a href="mailto:rinaldopereira1996@gmail.com">rinaldopereira1996@gmail.com</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="k">LinkedIn</div>
+          <div class="v"><a href="https://www.linkedin.com/in/rinaldo-pereira-l-developer-2aa407287" target="_blank" rel="noopener">/in/rinaldo-pereira-l-developer</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="k">GitHub</div>
+          <div class="v"><a href="https://github.com/RinaldoFull" target="_blank" rel="noopener">github.com/RinaldoFull</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS BAR -->
+  <div class="gui-statusbar">
+    <span><span class="dot"></span> Sistema: DEV — Cliente 100</span>
+    <span>© 2026 Rinaldo Pereira de Andrade Júnior</span>
+    <span>INS · 12:00:00</span>
+  </div>
+
+</body>
+</html>
